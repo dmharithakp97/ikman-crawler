@@ -70,3 +70,18 @@ def clear_data(sheet):
             cell.value = ''
         sheet.update_cells(cell_range)
     print(f"Data clear complete: {sheet.title}")
+
+def read_config(spreadsheet):
+    config_sheet = spreadsheet.worksheet("Config")
+    config_values = config_sheet.get_all_values()
+    config_map = {}
+    key_index = config_values[0].index('Key')
+    value_index = config_values[0].index('Value')
+    for i in range(1, len(config_values)):
+        key = config_values[i][key_index]
+        value = config_values[i][value_index]
+        if key in config_map:
+            config_map[key].append(value)
+        else:
+            config_map[key] = [value]
+    return config_map    

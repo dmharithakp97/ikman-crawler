@@ -1,5 +1,5 @@
 from difflib import SequenceMatcher
-from src.utils import get_spreadsheet
+from utils import get_spreadsheet
 
 def handle(event, context):
     spreadsheet = get_spreadsheet()

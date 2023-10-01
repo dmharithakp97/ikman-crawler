@@ -1,18 +1,10 @@
 from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import math
-from src.utils import URL_PREFIX
-from src.utils import get_spreadsheet, google_translate_ads_list, extract_json_data, backup_sheet, clear_data
+from utils import URL_PREFIX
+from utils import get_spreadsheet, google_translate_ads_list, extract_json_data, backup_sheet, clear_data, read_config
 
 MAX_PAGES_THRESHOLD = 10
-
-URL_ARR = [
-    ['Nugegoda', 'https://ikman.lk/en/ads/nugegoda/houses-for-sale?enum.bathrooms=2,3,4,5,6,7,8,9,10,10+&enum.bedrooms=3,4,5,6,7,8,9,10,10+&money.price.minimum=15000000&money.price.maximum=50000000'],
-    ['Kotte', 'https://ikman.lk/en/ads/kotte/houses-for-sale?enum.bathrooms=2,3,4,5,6,7,8,9,10,10+&enum.bedrooms=3,4,5,6,7,8,9,10,10+&money.price.minimum=15000000&money.price.maximum=50000000'],
-    ['Colombo 5', 'https://ikman.lk/en/ads/colombo-5/houses-for-sale?enum.bathrooms=2,3,4,5,6,7,8,9,10,10+&enum.bedrooms=3,4,5,6,7,8,9,10,10+&money.price.minimum=15000000&money.price.maximum=50000000'],
-    ['Nawala', 'https://ikman.lk/en/ads/nawala/houses-for-sale?enum.bathrooms=2,3,4,5,6,7,8,9,10,10+&enum.bedrooms=3,4,5,6,7,8,9,10,10+&money.price.minimum=15000000&money.price.maximum=50000000']
-]
-
 
 def get_last_house_data(sheet):
     old_values = sheet.get_all_values()
@@ -35,17 +27,29 @@ def save_house_data(sheet, data):
     print(f"Saved data to : {sheet.title}, count: {len(data)}")
 
 
+def extract_url_data(config):
+    url_data = []
+    for url in config['Source']:
+        city = url.split('/')[5].replace('-', ' ').title()
+        url_data.append([city, url])
+    return url_data
+
 def handler(event, context):
     spreadsheet = get_spreadsheet()
+
+    config = read_config(spreadsheet)
+
+    url_data = extract_url_data(config)
+    
     house_data_sheet = spreadsheet.worksheet("New")
     backup_sheet(spreadsheet, house_data_sheet)
     last_house_data = get_last_house_data(house_data_sheet)    
     clear_data(house_data_sheet)    
 
     return_data = []
-    for url_index in range(len(URL_ARR)):
-        city = URL_ARR[url_index][0]
-        url = google_translate_ads_list(URL_ARR[url_index][1])
+    for url_index in range(len(url_data)):
+        city = url_data[url_index][0]
+        url = google_translate_ads_list(url_data[url_index][1])
         max_page_number = -1
         for page_no in range(1, MAX_PAGES_THRESHOLD + 1):
             final_url = f"{url}&page={page_no}"
@@ -82,4 +86,4 @@ def handler(event, context):
     save_house_data(house_data_sheet, return_data)
     
     
-# handler({}, {})
+handler({}, {})
