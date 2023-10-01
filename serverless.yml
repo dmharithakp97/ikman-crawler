@@ -18,6 +18,7 @@ provider:
 functions:
   house_crawler:
     handler: src/house_crawler.handler
+    timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
     events:
@@ -25,6 +26,7 @@ functions:
 
   description_processor:
     handler: src/description_processor.handler
+    timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
     events:
@@ -34,6 +36,7 @@ functions:
 
   duplicate_processor:
     handler: src/duplicate_processor.handle
+    timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
     events:
