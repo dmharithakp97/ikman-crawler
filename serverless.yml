@@ -1,0 +1,43 @@
+service: ikman-crawler
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
+
+functions:
+  house_crawler:
+    handler: src/house_crawler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
+    events:
+      - schedule: cron(0 1 * * ? *)
+
+  description_processor:
+    handler: src/description_processor.handler
+    layers:
+      - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
+    events:
+      - schedule: cron(15 1 * * ? *)
+      - schedule: cron(30 1 * * ? *)
+      - schedule: cron(45 1 * * ? *)
+
+  duplicate_processor:
+    handler: src/duplicate_processor.handle
+    layers:
+      - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
+    events:
+      - schedule: cron(0 2 * * ? *)
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
