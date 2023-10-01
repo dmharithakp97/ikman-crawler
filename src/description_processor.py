@@ -3,7 +3,7 @@ from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import time
 
-from utils.utils import get_spreadsheet, google_translate_ad, extract_json_data, backup_sheet, clear_data
+from utils import get_spreadsheet, google_translate_ad, extract_json_data, backup_sheet, clear_data
 
 
 

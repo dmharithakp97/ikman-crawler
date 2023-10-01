@@ -7,7 +7,6 @@ import requests
 URL_PREFIX = "https://ikman.lk/en/ad/"
 
 
-
 def get_spreadsheet():
     # Create a Secrets Manager client
     session = boto3.session.Session()
