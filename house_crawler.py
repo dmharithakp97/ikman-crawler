@@ -86,4 +86,4 @@ def handler(event, context):
     save_house_data(house_data_sheet, return_data)
     
     
-handler({}, {})
+# handler({}, {})
