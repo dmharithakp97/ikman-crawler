@@ -1,0 +1,64 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags-ignore:
+      - '**'
+    branches:
+      - 'main'
+  workflow_dispatch:
+
+env:
+  DEPLOY_ENV: "prod"
+  AWS_ACCESS_KEY_ID: ${{secrets.PROD_AWS_ACCESS_KEY_ID}}
+  AWS_SECRET_ACCESS_KEY: ${{secrets.PROD_AWS_SECRET_ACCESS_KEY}}
+  AWS_REGION: "us-east-1"
+
+
+jobs:
+  DEPLOY:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - id: checkout
+        name: Checkout the source code.
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - id: setup-nodejs
+        name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - id: setup-python
+        name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - id: install-serverless
+        name: install serverless
+        run: |
+          npm install -g serverless@2.72.0
+          sls plugin install -n serverless-python-requirements
+      - id: check-installation
+        name: Check installation
+        run: |
+          python --version
+          python -m pip --version
+          node --version
+          npm --version
+      - id: configure-aws-credentials
+        name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - id: deploy-lambda
+        name: serverless deploy
+        run: |
+          sed -i "s#stage: dev#stage: $DEPLOY_ENV#g" serverless.yml
+          cat serverless.yml
+          sls deploy --stage $DEPLOY_ENV
