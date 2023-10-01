@@ -10,6 +10,10 @@ provider:
       Action:
         - "lambda:InvokeFunction"
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "secretsmanager:GetSecretValue"
+      Resource: "arn:aws:secretsmanager:us-east-1:310340543340:secret:gsheet_client_secret-eq2CuG"
 
 functions:
   house_crawler:
