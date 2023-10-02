@@ -2,7 +2,7 @@ from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import math
 from utils import URL_PREFIX
-from utils import get_spreadsheet, google_translate_ads_list, extract_json_data, backup_sheet, clear_data, read_config
+from utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data, read_config
 
 MAX_PAGES_THRESHOLD = 5
 
@@ -50,7 +50,7 @@ def handler(event, context):
     for url_index in range(len(url_data)):
         city = url_data[url_index][0]
         print(f"Fetching data location: {city}")
-        url = google_translate_ads_list(url_data[url_index][1])
+        url = url_data[url_index][1]
         max_page_number = -1
         for page_no in range(1, MAX_PAGES_THRESHOLD + 1):
             final_url = f"{url}&page={page_no}"

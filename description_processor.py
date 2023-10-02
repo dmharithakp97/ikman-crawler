@@ -3,7 +3,7 @@ from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import time
 
-from utils import get_spreadsheet, google_translate_ad, extract_json_data, backup_sheet, clear_data
+from utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data
 
 
 
@@ -56,8 +56,7 @@ def handler(event, context):
             break
         try:
             if url not in desc_data_data.keys():
-                final_url = google_translate_ad(url)            
-                data = extract_json_data(final_url)
+                data = extract_json_data(url)
                 desc = data['adDetail']['data']['ad']['description']
             else:
                 desc = desc_data_data[url][0]
