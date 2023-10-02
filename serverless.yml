@@ -15,6 +15,10 @@ provider:
       Action:
         - "secretsmanager:GetSecretValue"
       Resource: "arn:aws:secretsmanager:us-east-1:310340543340:secret:gsheet_client_secret-eq2CuG"
+    - Effect: "Allow" 
+      Action:
+        - "ses:SendEmail"
+      Resource: "*"      
 
 functions:
   house_crawler:
