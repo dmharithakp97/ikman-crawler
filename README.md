@@ -1,4 +1,4 @@
-# Project Title: Ikman Crawler
+# Ikman Crawler
 
 This project is a web crawler for the website ikman.lk. It is built using AWS Lambda functions and Python.
 
