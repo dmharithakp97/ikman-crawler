@@ -3,9 +3,47 @@ from google.oauth2.service_account import Credentials
 import gspread
 import json
 import requests
+import boto3
+from botocore.exceptions import BotoCoreError, ClientError
 
 URL_PREFIX = "https://ikman.lk/en/ad/"
 
+def get_parameter(name):
+    ssm = boto3.client('ssm', region_name='us-east-1')
+    parameter = ssm.get_parameter(Name=name, WithDecryption=True)
+    return parameter['Parameter']['Value']
+
+def send_email(subject, body_text, to_addresses, from_address):
+    # Create a new SES resource and specify a region.
+    client = boto3.client('ses',region_name="us-east-1")
+
+    # Try to send the email.
+    try:
+        #Provide the contents of the email.
+        response = client.send_email(
+            Destination={
+                'ToAddresses': to_addresses,
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': "UTF-8",
+                        'Data': body_text,
+                    },
+                },
+                'Subject': {
+                    'Charset': "UTF-8",
+                    'Data': subject,
+                },
+            },
+            Source=from_address,
+        )
+    # Display an error if something goes wrong.	
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print("Email sent! Message ID:"),
+        print(response['MessageId'])
 
 def get_spreadsheet():
     # Create a Secrets Manager client
@@ -33,7 +71,7 @@ def get_spreadsheet():
 
     # Access the Google Sheet
     gc = gspread.authorize(creds)
-    spreadsheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/1FegF2xLs9dXpwhZxhd80Zz_rKIgoyygC2RpWODEZiHE/edit#gid=921283701')
+    spreadsheet = gc.open_by_url(get_parameter('ikman_crawler_google_sheet'))
     return spreadsheet
 
 def google_translate_ads_list(url):
@@ -43,13 +81,17 @@ def google_translate_ad(url):
     return 'https://translate.google.com/translate?sl=auto&tl=en&hl=en&u='+url+'&client=webapp'
 
 def extract_json_data(final_url):
-    print(f"Fetching: {final_url}")
-    response = requests.get(final_url)
-    response.encoding = 'utf-8'  # Set encoding to utf-8
-    print(f"HTTP Status: {response.status_code}")
-    data_str = response.text.split("window.initialData =")[1].split("</script>")[0]
-    data = json.loads(data_str)
-    return data
+    for attempt in range(3):
+        response = requests.get(final_url)
+        response.encoding = 'utf-8'  # Set encoding to utf-8
+        print(f"HTTP Status: {response.status_code}, URL: {final_url}")
+        if response.status_code == 200:
+            data_str = response.text.split("window.initialData =")[1].split("</script>")[0]
+            data = json.loads(data_str)
+            return data
+        else:
+            print(f"Attempt {attempt+1} failed. Retrying...")
+    raise Exception(f"Failed to fetch data from {final_url} after 3 attempts. HTTP Status: {response.status_code}")
 
 
 def backup_sheet(spreadsheet, sheet):
@@ -84,4 +126,5 @@ def read_config(spreadsheet):
             config_map[key].append(value)
         else:
             config_map[key] = [value]
+    print(f"Config read successfully: {len(config_map)} keys found")
     return config_map    

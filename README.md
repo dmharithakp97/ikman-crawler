@@ -12,6 +12,16 @@ The project depends on the following Python libraries:
 - requests
 - beautifulsoup4
 
+I also added the following AWS Systems Manager Parameters
+Parameter Name | Type |
+---|---|
+ikman_crawler_from_email | String |
+ikman_crawler_google_sheet | String |
+ikman_crawler_to_emails | StringList |
+
+The following AWS Secret to store the Google Cloud Service Account credentials.
+arn:aws:secretsmanager:us-east-1:310340543340:secret:gsheet_client_secret-eq2CuG
+
 ## AWS Lambda Functions
 
 These Lambdas will be updating [this Google Sheet](https://docs.google.com/spreadsheets/d/1FegF2xLs9dXpwhZxhd80Zz_rKIgoyygC2RpWODEZiHE/edit#gid=1932230916)
@@ -54,7 +64,6 @@ Else If one or more of the B rows has Status="Ignore", then
 	If A's Total greater than or equals to the  minimum Total amount found from Y then
 		Update A's status = "Ignore", A's Notes = the URL value of the row found in Step Y
 ```
-
 
 
 ## Running the Project
