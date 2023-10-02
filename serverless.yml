@@ -9,6 +9,7 @@ provider:
     - Effect: "Allow"
       Action:
         - "lambda:InvokeFunction"
+        - "ssm:GetParameter"
       Resource: "*"
     - Effect: "Allow"
       Action:
