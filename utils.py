@@ -75,7 +75,8 @@ def get_spreadsheet():
     return spreadsheet
 
 def google_translate_ads_list(url):
-    return url.replace('https://ikman.lk/', 'https://ikman-lk.translate.goog/') + '&_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp'
+    return url
+    # return url.replace('https://ikman.lk/', 'https://ikman-lk.translate.goog/') + '&_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp'
 
 def google_translate_ad(url):
     return 'https://translate.google.com/translate?sl=auto&tl=en&hl=en&u='+url+'&client=webapp'
