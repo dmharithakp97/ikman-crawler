@@ -52,3 +52,7 @@ plugins:
 custom:
   pythonRequirements:
     dockerizePip: non-linux
+
+package:
+  include:
+    - src/**
