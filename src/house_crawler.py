@@ -1,8 +1,8 @@
 from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import math
-from utils import URL_PREFIX
-from utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data, read_config
+from src.utils import URL_PREFIX
+from src.utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data, read_config
 
 MAX_PAGES_THRESHOLD = 5
 

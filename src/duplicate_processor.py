@@ -1,6 +1,6 @@
 from difflib import SequenceMatcher
 from datetime import date
-from utils import get_parameter, get_spreadsheet, send_email
+from src.utils import get_parameter, get_spreadsheet, send_email
 
 def handle(event, context):
     spreadsheet = get_spreadsheet()
