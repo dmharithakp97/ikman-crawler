@@ -28,6 +28,7 @@ functions:
       - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
     events:
       - schedule: cron(30 23 * * ? *)
+        enabled: false
 
   description_processor:
     handler: src/description_processor.handler
@@ -36,7 +37,9 @@ functions:
       - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
     events:
       - schedule: cron(45 23 * * ? *)
+        enabled: false
       - schedule: cron(0 0 * * ? *)
+        enabled: false
 
   duplicate_processor:
     handler: src/duplicate_processor.handle
@@ -45,6 +48,7 @@ functions:
       - arn:aws:lambda:us-east-1:310340543340:layer:ikman-crawler-dependencies:1
     events:
       - schedule: cron(15 0 * * ? *)
+        enabled: false
 
 plugins:
   - serverless-python-requirements
