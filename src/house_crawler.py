@@ -4,7 +4,7 @@ import math
 from src.utils import URL_PREFIX
 from src.utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data, read_config
 
-MAX_PAGES_THRESHOLD = 5
+MAX_PAGES_THRESHOLD = 10
 
 def get_last_house_data(sheet):
     old_values = sheet.get_all_values()
