@@ -5,27 +5,25 @@ from src.utils import URL_PREFIX
 from src.utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data, read_config
 
 MAX_PAGES_THRESHOLD = 10
-
-def get_last_house_data(sheet):
+ 
+def get_last_house_urls(sheet):
     old_values = sheet.get_all_values()
-    old_data_obj = {}
     headers = old_values[0]
     url_index = headers.index('URL')
-    status_index = headers.index('Status')
-    notes_index = headers.index('Notes')
+    old_data_urls = []
     for i in range(1, len(old_values)):
         data_row = old_values[i]
         url = data_row[url_index]
-        if url not in old_data_obj:
-            old_data_obj[url] = [data_row[status_index], data_row[notes_index]]
+        old_data_urls.append(url)
     print("Last house data processed successfully")
-    return old_data_obj
+    return old_data_urls
+ 
 
-
-def save_house_data(sheet, data):
-    sheet.update('A2:G' + str(len(data) + 1), data)
-    print(f"Saved data to : {sheet.title}, count: {len(data)}")
-
+def append_house_data(sheet, data):
+    last_row = len(sheet.get_all_values()) + 1
+    range_str = 'A' + str(last_row) + ':G' + str(last_row + len(data))
+    sheet.update(range_str, data)
+    print(f"Appended data to : {sheet.title}, count: {len(data)}")
 
 def extract_url_data(config):
     url_data = []
@@ -42,9 +40,9 @@ def handler(event, context):
     url_data = extract_url_data(config)
     
     house_data_sheet = spreadsheet.worksheet("New")
-    backup_sheet(spreadsheet, house_data_sheet)
-    last_house_data = get_last_house_data(house_data_sheet)    
-    clear_data(house_data_sheet)    
+    # backup_sheet(spreadsheet, house_data_sheet)
+    last_house_urls = get_last_house_urls(house_data_sheet)    
+    # clear_data(house_data_sheet)    
 
     return_data = []
     for url_index in range(len(url_data)):
@@ -67,24 +65,21 @@ def handler(event, context):
                 size = ad['details']
                 ad_url = f"{URL_PREFIX}{ad['slug']}"
                 consider, note, description = "", "", ""
-                if ad_url in last_house_data:
-                    consider = last_house_data[ad_url][0]
-                    note = last_house_data[ad_url][1]
+                if ad_url not in last_house_urls:
+                    return_data.append([
+                        ad['title'],
+                        city,
+                        size,
+                        price,
+                        f"{URL_PREFIX}{ad['slug']}",
+                        consider,
+                        note
+                    ])                 
 
-                return_data.append([
-                    ad['title'],
-                    city,
-                    size,
-                    price,
-                    f"{URL_PREFIX}{ad['slug']}",
-                    consider,
-                    note
-                ])                 
+                if page_no == max_page_number:
+                    break
 
-            if page_no == max_page_number:
-                break
-
-    save_house_data(house_data_sheet, return_data)
+    append_house_data(house_data_sheet, return_data)
     
     
 # handler({}, {})
