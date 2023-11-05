@@ -74,12 +74,6 @@ def get_spreadsheet():
     spreadsheet = gc.open_by_url(get_parameter('ikman_crawler_google_sheet'))
     return spreadsheet
 
-# def google_translate_ads_list(url):    
-#     return url.replace('https://ikman.lk/', 'https://ikman-lk.translate.goog/') + '&_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp'
-
-# def google_translate_ad(url):    
-#     return 'https://translate.google.com/translate?sl=auto&tl=en&hl=en&u='+url+'&client=webapp'
-
 def extract_json_data(final_url):
     for attempt in range(3):
         response = requests.get(final_url)

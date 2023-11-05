@@ -1,6 +1,7 @@
 from difflib import SequenceMatcher
 from datetime import date
 from src.utils import get_parameter, get_spreadsheet, send_email
+# from utils import get_parameter, get_spreadsheet, send_email
 
 def handle(event, context):
     spreadsheet = get_spreadsheet()
@@ -70,6 +71,9 @@ def handle(event, context):
                         new_data[i][notes_index_new] = min_total_row[url_index_new]
                         print(f"Ignore: {url_new}")
                
+
+ # Rearrange rows before saving
+    new_data = [new_data[0]] + sorted(new_data[1:], key=lambda row: ('' if row[status_index_new] == '' else ('1' if row[status_index_new] == 'Consider' else '2')))
 
     new_sheet.update('A1', new_data)
 

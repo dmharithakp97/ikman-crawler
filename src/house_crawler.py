@@ -2,9 +2,11 @@ from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import math
 from src.utils import URL_PREFIX
-from src.utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data, read_config
+from src.utils import get_spreadsheet, extract_json_data, read_config
+# from utils import URL_PREFIX
+# from utils import get_spreadsheet, extract_json_data, read_config
 
-MAX_PAGES_THRESHOLD = 10
+MAX_PAGES_THRESHOLD = 5
  
 def get_last_house_urls(sheet):
     old_values = sheet.get_all_values()
@@ -21,7 +23,10 @@ def get_last_house_urls(sheet):
 
 def append_house_data(sheet, data):
     last_row = len(sheet.get_all_values()) + 1
-    range_str = 'A' + str(last_row) + ':G' + str(last_row + len(data))
+    required_rows = last_row + len(data)
+    if required_rows > sheet.row_count:
+        sheet.add_rows(required_rows - sheet.row_count)
+    range_str = 'A' + str(last_row) + ':G' + str(required_rows)
     sheet.update(range_str, data)
     print(f"Appended data to : {sheet.title}, count: {len(data)}")
 

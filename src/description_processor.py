@@ -3,7 +3,8 @@ from google.oauth2.service_account import Credentials
 from bs4 import BeautifulSoup
 import time
 
-from src.utils import get_spreadsheet, extract_json_data, backup_sheet, clear_data
+from src.utils import get_spreadsheet, extract_json_data
+# from utils import get_spreadsheet, extract_json_data
 
 
 
@@ -36,7 +37,10 @@ def get_last_desc_urls(sheet):
 
 def append_desc_data(sheet, data):
     last_row = len(sheet.get_all_values()) + 1
-    range_str = 'A' + str(last_row) + ':B' + str(last_row + len(data))
+    required_rows = last_row + len(data)
+    if required_rows > sheet.row_count:
+        sheet.add_rows(required_rows - sheet.row_count)
+    range_str = 'A' + str(last_row) + ':B' + str(required_rows)
     sheet.update(range_str, data)
     print(f"Appended data to : {sheet.title}, count: {len(data)}")
 
