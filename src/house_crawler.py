@@ -6,7 +6,7 @@ from src.utils import get_spreadsheet, extract_json_data, read_config
 # from utils import URL_PREFIX
 # from utils import get_spreadsheet, extract_json_data, read_config
 
-MAX_PAGES_THRESHOLD = 5
+MAX_PAGES_THRESHOLD = 10
  
 def get_last_house_urls(sheet):
     old_values = sheet.get_all_values()
@@ -81,8 +81,11 @@ def handler(event, context):
                         note
                     ])                 
 
-                if page_no == max_page_number:
-                    break
+            if page_no == max_page_number:
+                print("breaking")
+                break
+            else:
+                print("continue")
 
     append_house_data(house_data_sheet, return_data)
     
