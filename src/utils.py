@@ -5,6 +5,7 @@ import json
 import requests
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
+import os
 
 URL_PREFIX = "https://ikman.lk/en/ad/"
 
