@@ -14,7 +14,7 @@ provider:
     - Effect: "Allow"
       Action:
         - "secretsmanager:GetSecretValue"
-      Resource: ${env:SECRET_ARN}"
+      Resource: "${env:SECRET_ARN}"
     - Effect: "Allow" 
       Action:
         - "ses:SendEmail"
