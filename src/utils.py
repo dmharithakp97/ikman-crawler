@@ -55,7 +55,7 @@ def get_spreadsheet():
 
     # Retrieve the secret
     get_secret_value_response = client.get_secret_value(
-        SecretId='arn:aws:secretsmanager:us-east-1:310340543340:secret:gsheet_client_secret-eq2CuG'
+        SecretId=os.environ['SECRET_ARN']
     )
 
     # Decode the secret
