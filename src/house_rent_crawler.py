@@ -32,7 +32,7 @@ def append_house_data(sheet, data):
 
 def extract_url_data(config):
     url_data = []
-    for url in config['House']:
+    for url in config['Rent']:
         city = url.split('/')[5].replace('-', ' ').title()
         url_data.append([city, url])
     return url_data
@@ -44,7 +44,7 @@ def handler(event, context):
 
     url_data = extract_url_data(config)
     
-    house_data_sheet = spreadsheet.worksheet("Sale")
+    house_data_sheet = spreadsheet.worksheet("Rent")
     # backup_sheet(spreadsheet, house_data_sheet)
     last_house_urls = get_last_house_urls(house_data_sheet)    
     # clear_data(house_data_sheet)    
