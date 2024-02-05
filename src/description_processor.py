@@ -40,7 +40,7 @@ def append_desc_data(sheet, data):
     required_rows = last_row + len(data)
     if required_rows > sheet.row_count:
         sheet.add_rows(required_rows - sheet.row_count)
-    range_str = 'A' + str(last_row) + ':B' + str(required_rows)
+    range_str = 'A' + str(last_row) + ':C' + str(required_rows)
     sheet.update(range_str, data)
     print(f"Appended data to : {sheet.title}, count: {len(data)}")
 
@@ -50,7 +50,6 @@ def handler(event, context):
     last_house_data = get_last_house_data(house_data_sheet)
     
     desc_data_sheet = spreadsheet.worksheet("Description")
-    # backup_sheet(spreadsheet, desc_data_sheet)
     desc_data_urls = get_last_desc_urls(desc_data_sheet)     
 
     return_data = []
@@ -63,9 +62,13 @@ def handler(event, context):
             if url not in desc_data_urls:
                 data = extract_json_data(url)
                 desc = data['adDetail']['data']['ad']['description']
+
+                properties = data['adDetail']['data']['ad']['properties']
+                land_size = next((property['value'].split()[0] for property in properties if property['key'] == "land_size"), None)
                 return_data.append([
                     f"{url}",
-                    desc   
+                    desc,
+                    land_size
                 ])                    
         except Exception as e:
             print(f"Error occurred: {e}. Skipping this iteration.")
