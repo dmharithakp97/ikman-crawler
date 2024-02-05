@@ -32,7 +32,7 @@ def append_house_data(sheet, data):
 
 def extract_url_data(config):
     url_data = []
-    for url in config['House']:
+    for url in config['Land']:
         city = url.split('/')[5].replace('-', ' ').title()
         url_data.append([city, url])
     return url_data
@@ -44,7 +44,7 @@ def handler(event, context):
 
     url_data = extract_url_data(config)
     
-    house_data_sheet = spreadsheet.worksheet("New")
+    house_data_sheet = spreadsheet.worksheet("Land")
     # backup_sheet(spreadsheet, house_data_sheet)
     last_house_urls = get_last_house_urls(house_data_sheet)    
     # clear_data(house_data_sheet)    
@@ -66,20 +66,26 @@ def handler(event, context):
                 print(f"max_page_number: {max_page_number}")
 
             for ad in ads:
-                price = ad['price'].split('Rs ')[1]
-                size = ad['details']
-                ad_url = f"{URL_PREFIX}{ad['slug']}"
-                consider, note, description = "", "", ""
-                if ad_url not in last_house_urls:
-                    return_data.append([
-                        ad['title'],
-                        city,
-                        size,
-                        price,
-                        f"{URL_PREFIX}{ad['slug']}",
-                        consider,
-                        note
-                    ])                 
+                try:
+                    ad_url = f"{URL_PREFIX}{ad['slug']}"
+                    size = ad['details']
+                    if "Negotiable" in ad['price']:
+                        continue
+                    price = ad['price'].split('Rs ')[1]
+                    consider, note, description = "", "", ""
+                    if ad_url not in last_house_urls:
+                        return_data.append([
+                            ad['title'],
+                            city,
+                            size,
+                            calculate_price_per_perch(size, price),
+                            ad_url,
+                            consider,
+                            note
+                        ])
+                except Exception as e:
+                    print(f"Exception occurred for URL {ad_url}: {e}")
+                    continue
 
             if page_no == max_page_number:
                 print("breaking")
@@ -89,5 +95,24 @@ def handler(event, context):
 
     append_house_data(house_data_sheet, return_data)
     
+def calculate_price_per_perch(size, price):
+    # Extract the numeric value from the size string
+    size_value = float(size.split()[0])
+    
+    # Check if price is in "total price" pattern
+    if "total price" in price:
+        # Remove commas and extract the numeric value from the price string
+        total_price_value = float(price.replace(",", "").split()[0])
+        # Calculate price per perch
+        price_per_perch = total_price_value / size_value
+    elif "per perch" in price:
+        # Directly extract the numeric value for price per perch
+        price_per_perch = float(price.replace(",", "").split()[0])
+    else:
+        # Handle unexpected price pattern
+        print("Unexpected price pattern:", price)
+        return None
+    
+    return round(price_per_perch)
     
 # handler({}, {})

@@ -47,6 +47,14 @@ functions:
       - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
     events:
       - schedule: cron(15 0 * * ? *)
+      
+  land_crawler:
+    handler: src/land_crawler.handler
+    timeout: 900
+    layers:
+      - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
+    events:
+      - schedule: cron(15 0 ? * MON *)
 
 plugins:
   - serverless-python-requirements
