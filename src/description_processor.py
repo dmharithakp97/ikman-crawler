@@ -46,7 +46,7 @@ def append_desc_data(sheet, data):
 
 def handler(event, context):
     spreadsheet = get_spreadsheet()
-    house_data_sheet = spreadsheet.worksheet("New")
+    house_data_sheet = spreadsheet.worksheet("Sale")
     last_house_data = get_last_house_data(house_data_sheet)
     
     desc_data_sheet = spreadsheet.worksheet("Description")
