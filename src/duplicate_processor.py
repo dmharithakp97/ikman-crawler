@@ -5,7 +5,7 @@ from src.utils import get_parameter, get_spreadsheet, send_email
 
 def handle(event, context):
     spreadsheet = get_spreadsheet()
-    new_sheet = spreadsheet.worksheet("New")
+    new_sheet = spreadsheet.worksheet("Sale")
     desc_sheet = spreadsheet.worksheet("Description")
 
     new_data = new_sheet.get_all_values()
