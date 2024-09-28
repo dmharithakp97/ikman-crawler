@@ -28,49 +28,36 @@ functions:
     timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
-    events:
-      - schedule: cron(30 23 * * ? *)
 
   description_processor:
     handler: src/description_processor.handler
     timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
-    events:
-      - schedule: cron(45 23 * * ? *)
-      - schedule: cron(0 0 * * ? *)
 
   duplicate_processor:
     handler: src/duplicate_processor.handle
     timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
-    events:
-      - schedule: cron(15 0 * * ? *)
       
   land_crawler:
     handler: src/land_crawler.handler
     timeout: 900
     layers:
       - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
-    events:
-      - schedule: cron(15 0 ? * MON *)
 
-  # house_rent_crawler:
-  #   handler: src/house_rent_crawler.handler
-  #   timeout: 900
-  #   layers:
-  #     - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
-  #   events:
-  #     - schedule: cron(30 23 * * ? *)  
+  house_rent_crawler:
+    handler: src/house_rent_crawler.handler
+    timeout: 900
+    layers:
+      - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
 
-  # house_rent_notifier:
-  #   handler: src/house_rent_notifier.handle
-  #   timeout: 900
-  #   layers:
-  #     - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
-  #   events:
-  #     - schedule: cron(15 0 * * ? *)          
+  house_rent_notifier:
+    handler: src/house_rent_notifier.handle
+    timeout: 900
+    layers:
+      - arn:aws:lambda:us-east-1:${env:AWS_ACCOUNT}:layer:ikman-crawler-dependencies:1
 
 plugins:
   - serverless-python-requirements
