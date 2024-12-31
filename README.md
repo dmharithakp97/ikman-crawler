@@ -13,7 +13,7 @@ Parameter Name | Type | Explanation |
 ---|---|---|
 ikman_crawler_from_email | String | Here I used a test Gmail I created. This has to be verified in AWS SES. |
 ikman_crawler_to_emails | StringList | Here I use my personal Gmail. It is not required to verify this. |
-ikman_crawler_google_sheet | String | Create a copy of [this Google sheet](https://docs.google.com/spreadsheets/d/15XKM_S1muBHHVS2SxnYE7ubb_34tVUKeXOrimI5rxWI/), and use the copy. Makesure the Google Cloud Service Account mentioned in #2 is an editor of the sheet. |
+ikman_crawler_google_sheet | String | Create a copy of [this Google sheet](https://docs.google.com/spreadsheets/d/1JotBJ0CEUzFIoZR5rwegxt65MbfhX8rL2LkAmkXMsPg/), and use the copy. Makesure the Google Cloud Service Account mentioned in #2 is an editor of the sheet. |
 
 
 ## AWS Lambda Functions
@@ -22,11 +22,11 @@ These Lambdas will be updating the copy of the Google Sheet created.
 
 The project consists of the following AWS Lambda functions:
 
-1. `house_crawler`: This is scheduled to run once a day. It will go through multiple Ikman.lk ad list URLs listed with `Source` key in [this tab](https://docs.google.com/spreadsheets/d/15XKM_S1muBHHVS2SxnYE7ubb_34tVUKeXOrimI5rxWI/edit#gid=921283701). Here is an [example URL](https://ikman.lk/en/ads/nawala/houses-for-sale?enum.bathrooms=2,3,4,5,6,7,8,9,10,10+&enum.bedrooms=3,4,5,6,7,8,9,10,10+&money.price.minimum=15000000&money.price.maximum=50000000) which has house for sale ads in Nawala area with 2+ bathrooms, 3+ bedrooms and price between 15 to 50 million. This lambda will save all those ads in the `New` tab of the Google Sheet.
+1. `house_crawler`: This is scheduled to run once a day. It will go through multiple Ikman.lk ad list URLs listed with `Source` key in [this tab](https://docs.google.com/spreadsheets/d/1JotBJ0CEUzFIoZR5rwegxt65MbfhX8rL2LkAmkXMsPg/edit?gid=921283701#gid=921283701). Here is an [example URL](https://ikman.lk/en/ads/nugegoda/houses-for-sale?enum.bathrooms=2,3,4,5,6,7,8,9,10,10+&enum.bedrooms=4,5,6,7,8,9,10,10+&money.price.minimum=15000000&money.price.maximum=80000000) which has house for sale ads in Nawala area with 2+ bathrooms, 3+ bedrooms and price between 15 to 80 million. This lambda will save all those ads in the `Sale` tab of the Google Sheet.
 
 2. `description_processor`: This is scheduled to run 15 mins after the 1st one. It will go through individual ads and copy the ad description text to `Description` tab.
 
-3. `duplicate_processor`: This is scheduled to run 15 min after the 2nd one. In the [New tab](https://docs.google.com/spreadsheets/d/15XKM_S1muBHHVS2SxnYE7ubb_34tVUKeXOrimI5rxWI/edit#gid=1932230916), there is a column named `Status`, a dropdown which you can manually select `Ignore` and `Consider` if you want to ignore that ad or consider to revisit the ad later. Based on your last selection, for a given ad if you have selected `Ignore`, `Consider` or EMPTY (haven't taken any action) before, based on that the following logic will be executed.
+3. `duplicate_processor`: This is scheduled to run 15 min after the 2nd one. In the [Sale](https://docs.google.com/spreadsheets/d/1JotBJ0CEUzFIoZR5rwegxt65MbfhX8rL2LkAmkXMsPg/edit?gid=1932230916#gid=1932230916), there is a column named `Status`, a dropdown which you can manually select `Ignore` and `Consider` if you want to ignore that ad or consider to revisit the ad later. Based on your last selection, for a given ad if you have selected `Ignore`, `Consider` or EMPTY (haven't taken any action) before, based on that the following logic will be executed.
 
 The following prompt was used to get this code written by ChatGPT. The same prompt explains the logic as well.
 ```
